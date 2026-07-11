@@ -1,0 +1,42 @@
+{
+  "municipality": "江戸川区",
+  "fiscal_year": 2026,
+  "basic_deduction_yen": 430000,
+  "medical": {
+    "income_rate": 0.0783,
+    "per_capita_yen": 48900,
+    "per_household_yen": 0,
+    "cap_yen": 670000
+  },
+  "support": {
+    "income_rate": 0.0284,
+    "per_capita_yen": 17400,
+    "per_household_yen": 0,
+    "cap_yen": 260000
+  },
+  "care": {
+    "income_rate": 0.0245,
+    "per_capita_yen": 17400,
+    "per_household_yen": 0,
+    "cap_yen": 170000
+  },
+  "childcare": {
+    "income_rate": 0.0027,
+    "per_capita_yen": 1870,
+    "per_capita_under18_yen": 0,
+    "per_household_yen": 0,
+    "cap_yen": 30000
+  },
+  "reduction": {
+    "base_yen": 430000,
+    "per_earner_yen": 100000,
+    "half_tier_per_insured_yen": 310000,
+    "fifth_tier_per_insured_yen": 570000
+  },
+  "preschool_half_per_capita": true,
+  "sources": [
+    "https://www.hokeniryo.metro.tokyo.lg.jp/documents/d/hokeniryo/tokubetuku202605-pdf",
+    "https://www.city.edogawa.tokyo.jp/e053/kurashi/iryohoken/kokuho/hokenryou/keisan/hokenryo_kimarikata.html"
+  ],
+  "verified_on": "2026-07-12"
+}

@@ -1,0 +1,41 @@
+{
+  "municipality": "目黒区",
+  "fiscal_year": 2026,
+  "basic_deduction_yen": 430000,
+  "medical": {
+    "income_rate": 0.0751,
+    "per_capita_yen": 47600,
+    "per_household_yen": 0,
+    "cap_yen": 670000
+  },
+  "support": {
+    "income_rate": 0.028,
+    "per_capita_yen": 17600,
+    "per_household_yen": 0,
+    "cap_yen": 260000
+  },
+  "care": {
+    "income_rate": 0.0235,
+    "per_capita_yen": 17800,
+    "per_household_yen": 0,
+    "cap_yen": 170000
+  },
+  "childcare": {
+    "income_rate": 0.0027,
+    "per_capita_yen": 1873,
+    "per_capita_under18_yen": 0,
+    "per_household_yen": 0,
+    "cap_yen": 30000
+  },
+  "reduction": {
+    "base_yen": 430000,
+    "per_earner_yen": 100000,
+    "half_tier_per_insured_yen": 310000,
+    "fifth_tier_per_insured_yen": 570000
+  },
+  "preschool_half_per_capita": true,
+  "sources": [
+    "https://www.hokeniryo.metro.tokyo.lg.jp/documents/d/hokeniryo/tokubetuku202605-pdf"
+  ],
+  "verified_on": "2026-07-12"
+}
