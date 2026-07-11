@@ -20,18 +20,28 @@
 - **Rate data** (`data/`): per-municipality JSON, hand-verified against
   official municipal pages (`sources` / `verified_on` fields carry
   provenance). Updated once a year (June).
-  - FY2026 (令和8年度) coverage: all 23 Tokyo special wards — unified
-    schedule for 20 wards plus separate masters for 中野区・江戸川区・目黒区,
-    which set their own rates in FY2026. Includes the new 子ども・子育て
-    支援金分 component (minors exempt from its per-capita levy).
-- **Web** (planned): axum + SSR form, no accounts, no server-side storage of
-  user input.
+  - FY2026 (令和8年度) coverage: 14 masters — all 23 Tokyo special wards
+    (unified schedule for 20 wards plus 中野区・江戸川区・目黒区, which set
+    their own rates in FY2026) and 10 designated cities (札幌・さいたま・
+    横浜・川崎・名古屋・京都・大阪・神戸・広島・福岡). Includes the new
+    子ども・子育て支援金分 component (minors exempt from its per-capita
+    levy) and the 保険料/保険税 distinction (さいたま市 is a tax, which
+    changes the refund limitation period to 5 years).
+  - Municipality quirks the schema cannot express (川崎市の独自所得割控除,
+    名古屋市の均等割2,000円控除, 札幌市の10円単位切り捨て等) are carried in
+    each master's `notes` and surfaced with the result.
+- **Web** (`src/bin/web.rs`): axum + SSR form. No accounts, no JS framework,
+  user input never stored server-side. Outputs the expected-premium
+  breakdown, a 3-tier verdict against the notified amount, and a printable
+  窓口確認メモ (questions to ask at the municipal office, tailored to the
+  household and the size of the gap).
 
 ## Development
 
 ```sh
 cargo test
 cargo clippy --all-targets
+cargo run --bin web   # http://127.0.0.1:8787 (KOKUHO_PORT / KOKUHO_DATA_DIR to override)
 ```
 
 ## Scope notes

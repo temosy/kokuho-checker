@@ -1,0 +1,46 @@
+{
+  "municipality": "川崎市",
+  "fiscal_year": 2026,
+  "basic_deduction_yen": 430000,
+  "medical": {
+    "income_rate": 0.0826,
+    "per_capita_yen": 43261,
+    "per_household_yen": 0,
+    "cap_yen": 670000
+  },
+  "support": {
+    "income_rate": 0.0289,
+    "per_capita_yen": 15306,
+    "per_household_yen": 0,
+    "cap_yen": 260000
+  },
+  "care": {
+    "income_rate": 0.0267,
+    "per_capita_yen": 15828,
+    "per_household_yen": 0,
+    "cap_yen": 170000
+  },
+  "childcare": {
+    "income_rate": 0.0032,
+    "per_capita_yen": 1742,
+    "per_capita_under18_yen": 0,
+    "per_household_yen": 0,
+    "cap_yen": 30000
+  },
+  "reduction": {
+    "base_yen": 430000,
+    "per_earner_yen": 100000,
+    "half_tier_per_insured_yen": 310000,
+    "fifth_tier_per_insured_yen": 570000
+  },
+  "preschool_half_per_capita": true,
+  "notes": [
+    "川崎市は市独自の軽減として、16歳未満の被保険者1人につき33万円・16〜18歳1人につき12万円を所得割の賦課基準額から控除する（前年合計所得58万円以下の世帯員が対象・申請不要）。該当世帯の実際の保険料はこの試算より低くなる。"
+  ],
+  "sources": [
+    "https://www.city.kawasaki.jp/350/page/0000187752.html",
+    "https://www.city.kawasaki.jp/350/page/0000187635.html",
+    "https://www.city.kawasaki.jp/350/page/0000187754.html"
+  ],
+  "verified_on": "2026-07-12"
+}

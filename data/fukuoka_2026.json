@@ -1,0 +1,42 @@
+{
+  "municipality": "福岡市",
+  "fiscal_year": 2026,
+  "basic_deduction_yen": 430000,
+  "medical": {
+    "income_rate": 0.0558,
+    "per_capita_yen": 19807,
+    "per_household_yen": 18664,
+    "cap_yen": 670000
+  },
+  "support": {
+    "income_rate": 0.0314,
+    "per_capita_yen": 10441,
+    "per_household_yen": 9838,
+    "cap_yen": 260000
+  },
+  "care": {
+    "income_rate": 0.0261,
+    "per_capita_yen": 10160,
+    "per_household_yen": 7751,
+    "cap_yen": 170000
+  },
+  "childcare": {
+    "income_rate": 0.0028,
+    "per_capita_yen": 1039,
+    "per_capita_under18_yen": 0,
+    "per_household_yen": 911,
+    "cap_yen": 30000
+  },
+  "reduction": {
+    "base_yen": 430000,
+    "per_earner_yen": 100000,
+    "half_tier_per_insured_yen": 310000,
+    "fifth_tier_per_insured_yen": 570000
+  },
+  "preschool_half_per_capita": true,
+  "sources": [
+    "https://www.city.fukuoka.lg.jp/hofuku/kokuho/hp/seido/06-02.html",
+    "https://www.city.fukuoka.lg.jp/hofuku/kokuho/hp/seido/06-03.html"
+  ],
+  "verified_on": "2026-07-12"
+}

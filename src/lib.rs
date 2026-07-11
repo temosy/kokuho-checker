@@ -8,10 +8,12 @@
 
 pub mod calc;
 pub mod household;
+pub mod memo;
 pub mod rates;
 pub mod verdict;
 
 pub use calc::{expected_premium, PremiumBreakdown};
 pub use household::{Household, Member};
+pub use memo::{window_checklist, MemoSection};
 pub use rates::{ComponentRate, RateSchedule, ReductionRules, ReductionTier};
 pub use verdict::{compare, Comparison, Verdict};

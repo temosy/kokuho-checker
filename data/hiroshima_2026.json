@@ -1,0 +1,47 @@
+{
+  "municipality": "広島市",
+  "fiscal_year": 2026,
+  "basic_deduction_yen": 430000,
+  "medical": {
+    "income_rate": 0.0818,
+    "per_capita_yen": 31228,
+    "per_household_yen": 30403,
+    "cap_yen": 670000
+  },
+  "support": {
+    "income_rate": 0.0264,
+    "per_capita_yen": 10342,
+    "per_household_yen": 10069,
+    "cap_yen": 260000
+  },
+  "care": {
+    "income_rate": 0.0252,
+    "per_capita_yen": 10443,
+    "per_household_yen": 7860,
+    "cap_yen": 170000
+  },
+  "childcare": {
+    "income_rate": 0.0027,
+    "per_capita_yen": 1128,
+    "per_capita_under18_yen": 0,
+    "per_household_yen": 1044,
+    "cap_yen": 30000
+  },
+  "reduction": {
+    "base_yen": 430000,
+    "per_earner_yen": 100000,
+    "half_tier_per_insured_yen": 310000,
+    "fifth_tier_per_insured_yen": 570000
+  },
+  "preschool_half_per_capita": true,
+  "notes": [
+    "子ども分の均等割1,128円は「被保険者均等割1,072円＋18歳以上被保険者均等割56円」の合算値（18歳未満は全額軽減のため実質0円）。",
+    "5割・2割の軽減判定では被保険者数に特定同一世帯所属者を含む。",
+    "後期高齢者医療への移行に伴う平等割の緩和措置（半額等）がある。該当世帯の実際の保険料はこの試算より低くなる。"
+  ],
+  "sources": [
+    "https://www.city.hiroshima.lg.jp/living/hoken-nenkin/1021143/1025566/1003464.html",
+    "https://www.city.hiroshima.lg.jp/living/hoken-nenkin/1021143/1025566/1022691.html"
+  ],
+  "verified_on": "2026-07-12"
+}

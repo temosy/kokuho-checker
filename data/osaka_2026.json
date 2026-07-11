@@ -1,0 +1,47 @@
+{
+  "municipality": "大阪市",
+  "fiscal_year": 2026,
+  "basic_deduction_yen": 430000,
+  "medical": {
+    "income_rate": 0.095,
+    "per_capita_yen": 34990,
+    "per_household_yen": 33908,
+    "cap_yen": 660000
+  },
+  "support": {
+    "income_rate": 0.0306,
+    "per_capita_yen": 11191,
+    "per_household_yen": 10845,
+    "cap_yen": 260000
+  },
+  "care": {
+    "income_rate": 0.026,
+    "per_capita_yen": 18682,
+    "per_household_yen": 0,
+    "cap_yen": 170000
+  },
+  "childcare": {
+    "income_rate": 0.0028,
+    "per_capita_yen": 1841,
+    "per_capita_under18_yen": 0,
+    "per_household_yen": 0,
+    "cap_yen": 30000
+  },
+  "reduction": {
+    "base_yen": 430000,
+    "per_earner_yen": 100000,
+    "half_tier_per_insured_yen": 310000,
+    "fifth_tier_per_insured_yen": 570000
+  },
+  "preschool_half_per_capita": true,
+  "notes": [
+    "大阪府内統一保険料率。医療分の賦課限度額は66万円（多くの政令市の67万円と異なる）。",
+    "料率数値は市の運営協議会報告資料（2026年2月）に基づく。市ページの確定料率表は画像掲載のため機械照合未実施。"
+  ],
+  "sources": [
+    "https://www.city.osaka.lg.jp/fukushi/page/0000624098.html",
+    "https://www.city.osaka.lg.jp/fukushi/cmsfiles/contents/0000007/7173/R7-2-4-3_houkoku2.pdf",
+    "https://www.city.osaka.lg.jp/fukushi/page/0000369751.html"
+  ],
+  "verified_on": "2026-07-12"
+}

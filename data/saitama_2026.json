@@ -1,0 +1,47 @@
+{
+  "municipality": "さいたま市",
+  "fiscal_year": 2026,
+  "basic_deduction_yen": 430000,
+  "medical": {
+    "income_rate": 0.0764,
+    "per_capita_yen": 43300,
+    "per_household_yen": 0,
+    "cap_yen": 670000
+  },
+  "support": {
+    "income_rate": 0.0273,
+    "per_capita_yen": 14900,
+    "per_household_yen": 0,
+    "cap_yen": 260000
+  },
+  "care": {
+    "income_rate": 0.0237,
+    "per_capita_yen": 16100,
+    "per_household_yen": 0,
+    "cap_yen": 170000
+  },
+  "childcare": {
+    "income_rate": 0.0026,
+    "per_capita_yen": 1700,
+    "per_capita_under18_yen": 0,
+    "per_household_yen": 0,
+    "cap_yen": 30000
+  },
+  "reduction": {
+    "base_yen": 430000,
+    "per_earner_yen": 100000,
+    "half_tier_per_insured_yen": 310000,
+    "fifth_tier_per_insured_yen": 570000
+  },
+  "preschool_half_per_capita": true,
+  "is_tax": true,
+  "notes": [
+    "さいたま市は国民健康保険「税」。区分ごとに100円未満切り捨てで課税されるため、この試算（円単位）とは最大数百円の差が出ることがある。",
+    "5割・2割の軽減判定では被保険者数に特定同一世帯所属者を含む。"
+  ],
+  "sources": [
+    "https://www.city.saitama.lg.jp/001/153/002/004/p053074.html",
+    "https://www.city.saitama.lg.jp/001/153/002/004/p010020.html"
+  ],
+  "verified_on": "2026-07-12"
+}

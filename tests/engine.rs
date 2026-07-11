@@ -36,6 +36,8 @@ fn schedule() -> RateSchedule {
             fifth_tier_per_insured_yen: 560_000,
         },
         preschool_half_per_capita: true,
+        is_tax: false,
+        notes: vec![],
         sources: vec![],
         verified_on: None,
     }

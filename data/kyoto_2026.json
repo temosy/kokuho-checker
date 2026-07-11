@@ -1,0 +1,47 @@
+{
+  "municipality": "京都市",
+  "fiscal_year": 2026,
+  "basic_deduction_yen": 430000,
+  "medical": {
+    "income_rate": 0.0794,
+    "per_capita_yen": 30080,
+    "per_household_yen": 17930,
+    "cap_yen": 670000
+  },
+  "support": {
+    "income_rate": 0.0266,
+    "per_capita_yen": 10360,
+    "per_household_yen": 6180,
+    "cap_yen": 260000
+  },
+  "care": {
+    "income_rate": 0.0251,
+    "per_capita_yen": 11090,
+    "per_household_yen": 5370,
+    "cap_yen": 170000
+  },
+  "childcare": {
+    "income_rate": 0.0028,
+    "per_capita_yen": 1170,
+    "per_capita_under18_yen": 0,
+    "per_household_yen": 660,
+    "cap_yen": 30000
+  },
+  "reduction": {
+    "base_yen": 430000,
+    "per_earner_yen": 100000,
+    "half_tier_per_insured_yen": 310000,
+    "fifth_tier_per_insured_yen": 570000
+  },
+  "preschool_half_per_capita": true,
+  "notes": [
+    "子ども・子育て支援分の均等割1,170円は「被保険者均等割1,110円＋18歳以上均等割60円」の合算値（18歳未満は全額軽減のため実質0円）。",
+    "後期高齢者医療への移行で単身となった世帯は平等割の軽減がある。該当世帯の実際の保険料はこの試算より低くなる。"
+  ],
+  "sources": [
+    "https://www.city.kyoto.lg.jp/hokenfukushi/page/0000351038.html",
+    "https://www.city.kyoto.lg.jp/hokenfukushi/page/0000351039.html",
+    "https://www.city.kyoto.lg.jp/hokenfukushi/page/0000351043.html"
+  ],
+  "verified_on": "2026-07-12"
+}
