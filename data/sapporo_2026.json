@@ -1,0 +1,46 @@
+{
+  "municipality": "札幌市",
+  "fiscal_year": 2026,
+  "basic_deduction_yen": 430000,
+  "medical": {
+    "income_rate": 0.0861,
+    "per_capita_yen": 20550,
+    "per_household_yen": 32540,
+    "cap_yen": 670000
+  },
+  "support": {
+    "income_rate": 0.0256,
+    "per_capita_yen": 6330,
+    "per_household_yen": 10010,
+    "cap_yen": 260000
+  },
+  "care": {
+    "income_rate": 0.0233,
+    "per_capita_yen": 6020,
+    "per_household_yen": 7550,
+    "cap_yen": 170000
+  },
+  "childcare": {
+    "income_rate": 0.0029,
+    "per_capita_yen": 1100,
+    "per_capita_under18_yen": 0,
+    "per_household_yen": 1000,
+    "cap_yen": 30000
+  },
+  "reduction": {
+    "base_yen": 430000,
+    "per_earner_yen": 100000,
+    "half_tier_per_insured_yen": 310000,
+    "fifth_tier_per_insured_yen": 570000
+  },
+  "preschool_half_per_capita": true,
+  "notes": [
+    "札幌市の保険料は10円未満切り捨てで賦課される。この試算（円単位）とは10円未満の差が出ることがある。",
+    "子ども・子育て支援金分の均等割は18歳以上の加入者のみに賦課される（賦課後に軽減する方式ではない）。"
+  ],
+  "sources": [
+    "https://www.city.sapporo.jp/hoken-iryo/kokuho/fuka.html",
+    "https://www.city.sapporo.jp/hoken-iryo/kokuho/fuka-gengaku.html"
+  ],
+  "verified_on": "2026-07-12"
+}

@@ -1,4 +1,25 @@
+use std::path::Path;
+
 use serde::{Deserialize, Serialize};
+
+/// Load every `*.json` rate master in a directory, sorted by municipality
+/// name. Fails fast on the first malformed file, naming it.
+pub fn load_dir(dir: &Path) -> Result<Vec<RateSchedule>, String> {
+    let entries = std::fs::read_dir(dir).map_err(|e| format!("read {}: {e}", dir.display()))?;
+    let mut schedules = Vec::new();
+    for entry in entries {
+        let path = entry.map_err(|e| e.to_string())?.path();
+        if path.extension().is_none_or(|ext| ext != "json") {
+            continue;
+        }
+        let text = std::fs::read_to_string(&path).map_err(|e| format!("read {}: {e}", path.display()))?;
+        let schedule: RateSchedule =
+            serde_json::from_str(&text).map_err(|e| format!("parse {}: {e}", path.display()))?;
+        schedules.push(schedule);
+    }
+    schedules.sort_by(|a, b| a.municipality.cmp(&b.municipality));
+    Ok(schedules)
+}
 
 /// Annual premium rates for one municipality, or a unified region such as
 /// Tokyo's 23 special wards. All amounts are yen per year. Every yearly
@@ -25,6 +46,14 @@ pub struct RateSchedule {
     /// Whether the per-capita levy for preschool children is halved
     /// (applied after the income-based reduction).
     pub preschool_half_per_capita: bool,
+    /// True where the municipality levies 国民健康保険税 (tax) instead of
+    /// 保険料 (fee). Changes the refund limitation period (5 years vs 2).
+    #[serde(default)]
+    pub is_tax: bool,
+    /// Caveats the schema cannot express (municipality-specific deductions,
+    /// per-household levy waivers, …). Shown to the user with the result.
+    #[serde(default)]
+    pub notes: Vec<String>,
     /// Official municipal pages the values were verified against.
     #[serde(default)]
     pub sources: Vec<String>,

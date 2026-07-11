@@ -1,0 +1,47 @@
+{
+  "municipality": "神戸市",
+  "fiscal_year": 2026,
+  "basic_deduction_yen": 430000,
+  "medical": {
+    "income_rate": 0.0738,
+    "per_capita_yen": 33700,
+    "per_household_yen": 21800,
+    "cap_yen": 670000
+  },
+  "support": {
+    "income_rate": 0.0297,
+    "per_capita_yen": 13510,
+    "per_household_yen": 8740,
+    "cap_yen": 260000
+  },
+  "care": {
+    "income_rate": 0.0278,
+    "per_capita_yen": 13970,
+    "per_household_yen": 6880,
+    "cap_yen": 170000
+  },
+  "childcare": {
+    "income_rate": 0.0026,
+    "per_capita_yen": 1330,
+    "per_capita_under18_yen": 0,
+    "per_household_yen": 830,
+    "cap_yen": 30000
+  },
+  "reduction": {
+    "base_yen": 430000,
+    "per_earner_yen": 100000,
+    "half_tier_per_insured_yen": 310000,
+    "fifth_tier_per_insured_yen": 570000
+  },
+  "preschool_half_per_capita": true,
+  "notes": [
+    "後期高齢者医療への移行により単身となった世帯は平等割が1/2軽減（5年間）→1/4軽減（3年間）される。該当世帯の実際の保険料はこの試算より低くなる。",
+    "旧被扶養者（65歳以上）は所得割全額免除・均等割5割免除（2年間）の減免がある。"
+  ],
+  "sources": [
+    "https://www.city.kobe.lg.jp/a52670/kurashi/support/insurance/gaku.html",
+    "https://www.city.kobe.lg.jp/a52670/kurashi/support/insurance/hokenryo.html",
+    "https://www.city.kobe.lg.jp/a52670/kurashi/support/insurance/gengaku.html"
+  ],
+  "verified_on": "2026-07-12"
+}

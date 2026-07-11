@@ -1,0 +1,46 @@
+{
+  "municipality": "名古屋市",
+  "fiscal_year": 2026,
+  "basic_deduction_yen": 430000,
+  "medical": {
+    "income_rate": 0.0883,
+    "per_capita_yen": 50591,
+    "per_household_yen": 0,
+    "cap_yen": 670000
+  },
+  "support": {
+    "income_rate": 0.0258,
+    "per_capita_yen": 15784,
+    "per_household_yen": 0,
+    "cap_yen": 260000
+  },
+  "care": {
+    "income_rate": 0.0234,
+    "per_capita_yen": 16120,
+    "per_household_yen": 0,
+    "cap_yen": 170000
+  },
+  "childcare": {
+    "income_rate": 0.0026,
+    "per_capita_yen": 1863,
+    "per_capita_under18_yen": 0,
+    "per_household_yen": 0,
+    "cap_yen": 30000
+  },
+  "reduction": {
+    "base_yen": 430000,
+    "per_earner_yen": 100000,
+    "half_tier_per_insured_yen": 310000,
+    "fifth_tier_per_insured_yen": 570000
+  },
+  "preschool_half_per_capita": true,
+  "notes": [
+    "名古屋市は市独自の軽減として、被保険者1人につき均等割から年間2,000円を差し引くほか、扶養家族・障害者控除等に応じた所得割の独自控除がある。実際の保険料はこの試算より低くなることがある。"
+  ],
+  "sources": [
+    "https://www.city.nagoya.jp/kurashi/hoken/1011736/1011793/1011794/1011799.html",
+    "https://www.city.nagoya.jp/kurashi/hoken/1011736/1011793/1011794/1011798.html",
+    "https://www.city.nagoya.jp/kurashi/hoken/1011736/1011793/1011807/1011810.html"
+  ],
+  "verified_on": "2026-07-12"
+}

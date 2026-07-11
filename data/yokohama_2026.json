@@ -1,0 +1,45 @@
+{
+  "municipality": "横浜市",
+  "fiscal_year": 2026,
+  "basic_deduction_yen": 430000,
+  "medical": {
+    "income_rate": 0.0833,
+    "per_capita_yen": 40870,
+    "per_household_yen": 0,
+    "cap_yen": 670000
+  },
+  "support": {
+    "income_rate": 0.0262,
+    "per_capita_yen": 13380,
+    "per_household_yen": 0,
+    "cap_yen": 260000
+  },
+  "care": {
+    "income_rate": 0.0284,
+    "per_capita_yen": 16200,
+    "per_household_yen": 0,
+    "cap_yen": 170000
+  },
+  "childcare": {
+    "income_rate": 0.0034,
+    "per_capita_yen": 1770,
+    "per_capita_under18_yen": 0,
+    "per_household_yen": 0,
+    "cap_yen": 30000
+  },
+  "reduction": {
+    "base_yen": 430000,
+    "per_earner_yen": 100000,
+    "half_tier_per_insured_yen": 310000,
+    "fifth_tier_per_insured_yen": 570000
+  },
+  "preschool_half_per_capita": true,
+  "notes": [
+    "5割・2割の軽減判定では被保険者数に特定同一世帯所属者（国保から後期高齢者医療へ移行した人）を含む。該当者がいる世帯は実際の軽減がこの試算より有利になることがある。"
+  ],
+  "sources": [
+    "https://www.city.yokohama.lg.jp/kurashi/koseki-zei-hoken/kokuho/hokenryo/r7hokennryouritu.html",
+    "https://www.city.yokohama.lg.jp/kurashi/koseki-zei-hoken/kokuho/hokenryo/04hokenryounituite.html"
+  ],
+  "verified_on": "2026-07-12"
+}

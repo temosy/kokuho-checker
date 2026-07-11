@@ -26,22 +26,35 @@ fn single_freelancer(income: u64) -> Household {
 }
 
 #[test]
-fn all_rate_masters_deserialize() {
-    for json in [
-        include_str!("../data/tokyo_special_wards_unified_2026.json"),
-        include_str!("../data/nakano_2026.json"),
-        include_str!("../data/edogawa_2026.json"),
-        include_str!("../data/meguro_2026.json"),
-    ] {
-        let s = load(json);
-        assert_eq!(s.fiscal_year, 2026);
-        assert_eq!(s.basic_deduction_yen, 430_000);
-        // FY2026 caps are common to all 23 wards.
-        assert_eq!(s.medical.cap_yen, 670_000);
-        assert_eq!(s.childcare.as_ref().unwrap().cap_yen, 30_000);
-        // The childcare component exempts minors.
-        assert_eq!(s.childcare.as_ref().unwrap().per_capita_under18_yen, Some(0));
-        assert!(!s.sources.is_empty());
+fn all_rate_masters_hold_fy2026_invariants() {
+    let schedules = rates::load_dir(std::path::Path::new("data")).unwrap();
+    assert_eq!(schedules.len(), 14, "4 Tokyo masters + 10 designated cities");
+
+    for s in &schedules {
+        let name = &s.municipality;
+        assert_eq!(s.fiscal_year, 2026, "{name}");
+        assert_eq!(s.basic_deduction_yen, 430_000, "{name}");
+        // FY2026 statutory reduction thresholds, verified per municipality.
+        assert_eq!(s.reduction.base_yen, 430_000, "{name}");
+        assert_eq!(s.reduction.per_earner_yen, 100_000, "{name}");
+        assert_eq!(s.reduction.half_tier_per_insured_yen, 310_000, "{name}");
+        assert_eq!(s.reduction.fifth_tier_per_insured_yen, 570_000, "{name}");
+        // FY2026 caps: medical is 670,000 everywhere except Osaka (660,000,
+        // prefecture-unified schedule lags the cabinet-order revision).
+        assert!(
+            s.medical.cap_yen == 670_000 || (name == "大阪市" && s.medical.cap_yen == 660_000),
+            "{name}: medical cap {}",
+            s.medical.cap_yen
+        );
+        assert_eq!(s.support.cap_yen, 260_000, "{name}");
+        assert_eq!(s.care.cap_yen, 170_000, "{name}");
+        // The FY2026 childcare component exists everywhere and exempts minors.
+        let childcare = s.childcare.as_ref().unwrap_or_else(|| panic!("{name}: childcare"));
+        assert_eq!(childcare.cap_yen, 30_000, "{name}");
+        assert_eq!(childcare.per_capita_under18_yen, Some(0), "{name}");
+        assert!(s.preschool_half_per_capita, "{name}");
+        assert!(!s.sources.is_empty(), "{name}");
+        assert!(s.verified_on.is_some(), "{name}");
     }
 }
 
