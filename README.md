@@ -44,6 +44,24 @@ cargo clippy --all-targets
 cargo run --bin web   # http://127.0.0.1:8787 (KOKUHO_PORT / KOKUHO_DATA_DIR to override)
 ```
 
+## Deployment
+
+Container image via the bundled `Dockerfile` (static musl build, rate
+masters baked in). Environment:
+
+- `KOKUHO_BIND` — bind address (image default `0.0.0.0`; native default
+  `127.0.0.1`)
+- `KOKUHO_PORT` — port (default `8787`)
+- `KOKUHO_BASE_PATH` — public URL prefix when served under a sub-path
+  behind a reverse proxy (e.g. `/kokuho` for temosy.com/kokuho/)
+- `KOKUHO_DATA_DIR` — rate master directory
+
+Production runs as a service of the `temosy-wordpress` compose stack on
+the home Fedora server (its nginx terminates TLS for temosy.com and
+proxies `/kokuho/` here; the fedora-edge SNI passthrough is untouched).
+`scripts/sync.sh` rsyncs sources next to that stack so its compose can
+build this image from `../kokuho-checker`.
+
 ## Scope notes
 
 - Annual amounts only for now; monthly proration (途中加入) is future work.
