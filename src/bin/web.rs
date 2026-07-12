@@ -5,14 +5,32 @@ use std::fmt::Write as _;
 use std::sync::Arc;
 
 use axum::extract::{Form, State};
-use axum::response::Html;
+use axum::response::{Html, Redirect};
 use axum::routing::{get, post};
 use axum::Router;
 use kokuho_checker::*;
 
 const MAX_MEMBERS: usize = 6;
 
-type AppState = Arc<Vec<RateSchedule>>;
+struct App {
+    schedules: Vec<RateSchedule>,
+    /// Public URL prefix when served under a sub-path behind a reverse
+    /// proxy (e.g. "/kokuho"). Empty when serving at the root.
+    base: String,
+}
+
+type AppState = Arc<App>;
+
+/// Normalize KOKUHO_BASE_PATH: "" or "/" mean root; otherwise ensure a
+/// single leading slash and no trailing slash ("kokuho/" → "/kokuho").
+fn normalize_base(s: &str) -> String {
+    let trimmed = s.trim().trim_matches('/');
+    if trimmed.is_empty() {
+        String::new()
+    } else {
+        format!("/{trimmed}")
+    }
+}
 
 #[tokio::main]
 async fn main() {
@@ -22,34 +40,48 @@ async fn main() {
     assert!(!schedules.is_empty(), "no rate masters found in {data_dir}");
     eprintln!("loaded {} rate masters from {data_dir}", schedules.len());
 
+    let bind = std::env::var("KOKUHO_BIND").unwrap_or_else(|_| "127.0.0.1".to_string());
     let port: u16 = std::env::var("KOKUHO_PORT")
         .ok()
         .and_then(|p| p.parse().ok())
         .unwrap_or(8787);
+    let base = normalize_base(&std::env::var("KOKUHO_BASE_PATH").unwrap_or_default());
 
-    let app = Router::new()
-        .route("/", get(index))
-        .route("/check", post(check))
-        .with_state(Arc::new(schedules));
+    let state = Arc::new(App {
+        schedules,
+        base: base.clone(),
+    });
+    let mut router = Router::new();
+    if base.is_empty() {
+        router = router.route("/", get(index)).route("/check", post(check));
+    } else {
+        // Serve under the prefix; redirect the bare prefix to the slashed
+        // form so relative resolution stays consistent.
+        let slashed = format!("{base}/");
+        router = router
+            .route(&base, get(move || async move { Redirect::permanent(&slashed) }))
+            .route(&format!("{base}/"), get(index))
+            .route(&format!("{base}/check"), post(check));
+    }
+    let router = router.with_state(state);
 
-    let listener = tokio::net::TcpListener::bind(("127.0.0.1", port))
-        .await
-        .expect("bind");
-    eprintln!("listening on http://127.0.0.1:{port}");
-    axum::serve(listener, app).await.expect("serve");
+    let addr = format!("{bind}:{port}");
+    let listener = tokio::net::TcpListener::bind(&addr).await.expect("bind");
+    eprintln!("listening on http://{addr}{base}/");
+    axum::serve(listener, router).await.expect("serve");
 }
 
-async fn index(State(schedules): State<AppState>) -> Html<String> {
-    Html(page(&render_form(&schedules)))
+async fn index(State(app): State<AppState>) -> Html<String> {
+    Html(page(&render_form(&app)))
 }
 
 async fn check(
-    State(schedules): State<AppState>,
+    State(app): State<AppState>,
     Form(fields): Form<Vec<(String, String)>>,
 ) -> Html<String> {
     let input = parse_fields(&fields);
     let schedule = match &input.choice {
-        ScheduleChoice::Listed(i) => match schedules.get(*i) {
+        ScheduleChoice::Listed(i) => match app.schedules.get(*i) {
             Some(s) => s,
             None => return Html(page("<p>自治体の指定が不正です。</p>")),
         },
@@ -57,7 +89,7 @@ async fn check(
             if s.medical.income_rate == 0.0 && s.medical.per_capita_yen == 0 {
                 return Html(page(&format!(
                     "<p>手動入力を使う場合は、少なくとも医療分の所得割率か均等割を入力してください。</p>{}",
-                    render_form(&schedules)
+                    render_form(&app)
                 )));
             }
             s
@@ -66,7 +98,7 @@ async fn check(
     if input.household.insured_count() == 0 {
         return Html(page(&format!(
             "<p>国保に加入している世帯員を1人以上入力してください。</p>{}",
-            render_form(&schedules)
+            render_form(&app)
         )));
     }
 
@@ -77,7 +109,11 @@ async fn check(
     let mut body = String::new();
     render_result(&mut body, schedule, &breakdown, comparison.as_ref());
     render_memo(&mut body, &memo);
-    body.push_str(r#"<p class="noprint"><a href="/">← 入力に戻る</a></p>"#);
+    let _ = write!(
+        body,
+        r#"<p class="noprint"><a href="{}/">← 入力に戻る</a></p>"#,
+        app.base
+    );
     Html(page(&body))
 }
 
@@ -277,9 +313,9 @@ details.manual td, details.manual th {{ padding: .25rem .4rem; }}
     )
 }
 
-fn render_form(schedules: &[RateSchedule]) -> String {
+fn render_form(app: &App) -> String {
     let mut options = String::new();
-    for (i, s) in schedules.iter().enumerate() {
+    for (i, s) in app.schedules.iter().enumerate() {
         let _ = write!(
             options,
             r#"<option value="{i}">{}（令和{}年度）</option>"#,
@@ -326,7 +362,7 @@ fn render_form(schedules: &[RateSchedule]) -> String {
 
     format!(
         r#"<p>届いた国民健康保険料の決定通知、その金額が正しいか検算します。自治体の公開料率から期待額を計算し、通知額と突き合わせます。</p>
-<form method="post" action="/check">
+<form method="post" action="{base}/check">
 <h2>自治体</h2>
 <select name="municipality">{options}</select>
 <details class="manual">
@@ -346,7 +382,8 @@ fn render_form(schedules: &[RateSchedule]) -> String {
 <h2>通知された年間保険料（円・任意）</h2>
 <input type="text" name="notified" placeholder="例: 419230">
 <br><button type="submit">検算する</button>
-</form>"#
+</form>"#,
+        base = app.base,
     )
 }
 
@@ -442,6 +479,15 @@ mod tests {
             .iter()
             .map(|(k, v)| (k.to_string(), v.to_string()))
             .collect()
+    }
+
+    #[test]
+    fn base_path_normalization() {
+        assert_eq!(normalize_base(""), "");
+        assert_eq!(normalize_base("/"), "");
+        assert_eq!(normalize_base("/kokuho"), "/kokuho");
+        assert_eq!(normalize_base("kokuho/"), "/kokuho");
+        assert_eq!(normalize_base(" /kokuho/ "), "/kokuho");
     }
 
     #[test]
