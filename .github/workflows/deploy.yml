@@ -1,0 +1,76 @@
+# Merge to main = auto-deploy. Mirrors the sibling temosy/system-kakari workflow.
+#
+# - test: GitHub-hosted ubuntu runner runs the same checks as local dev
+#   (cargo test + clippy). Runs on every push and PR.
+# - deploy: a self-hosted runner ON the Fedora prod box (LAN-only, unreachable
+#   from GitHub, so pull-based) syncs the sources into the podman build context
+#   next to the temosy-wordpress stack and rebuilds only the `kokuho` service.
+#   No SSH keys / secrets needed: the runner is already on the box, and
+#   `/usr/bin/podman` is NOPASSWD for the haruo user.
+#
+# Runner: ~/actions-runner-kokuho on Fedora (systemd user unit
+# github-runner-kokuho, label `deploy`), registered to temosy/kokuho-checker.
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Serialize deploys for this repo (let a running deploy finish; don't cancel).
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: cargo test
+        run: cargo test --all-targets --locked
+
+      - name: cargo clippy
+        run: cargo clippy --all-targets --locked -- -D warnings
+
+  deploy:
+    needs: test
+    if: github.event_name != 'pull_request'
+    runs-on: [self-hosted, deploy]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      # Local counterpart of scripts/sync.sh: make the podman build context
+      # (sibling of the temosy-wordpress stack) an exact mirror of this checkout.
+      - name: Sync sources to build context
+        run: |
+          rsync -a --delete \
+            --exclude '.git' --exclude 'target' \
+            "$GITHUB_WORKSPACE"/ "$HOME"/kakari-deploy/kokuho-checker/
+
+      # Rebuild only the kokuho service in the rootful temosy-wordpress stack.
+      # wp-nginx and the DB are untouched. sudo is passwordless for podman.
+      - name: Rebuild kokuho container
+        run: |
+          cd "$HOME"/kakari-deploy/temosy-wordpress
+          sudo podman compose up -d --build kokuho
+
+      # Verify the live URL from inside the LAN, pinned to 127.0.0.1 to avoid
+      # hairpin NAT (SNI/cert still validated via --resolve).
+      - name: Verify live site
+        run: |
+          curl -fsS -o /dev/null -w "  https://temosy.com/kokuho/ HTTP %{http_code}\n" \
+            --resolve temosy.com:443:127.0.0.1 https://temosy.com/kokuho/

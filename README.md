@@ -59,8 +59,19 @@ masters baked in). Environment:
 Production runs as a service of the `temosy-wordpress` compose stack on
 the home Fedora server (its nginx terminates TLS for temosy.com and
 proxies `/kokuho/` here; the fedora-edge SNI passthrough is untouched).
-`scripts/sync.sh` rsyncs sources next to that stack so its compose can
-build this image from `../kokuho-checker`.
+
+### Auto-deploy (CI)
+
+Merging to `main` deploys automatically via
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml): a
+GitHub-hosted runner runs `cargo test` + `clippy`, then a self-hosted
+runner on the Fedora box syncs the sources into the build context and
+rebuilds only the `kokuho` service (`sudo podman compose up -d --build
+kokuho`), finally verifying `https://temosy.com/kokuho/`. The box is
+LAN-only, so the runner is pull-based; no SSH keys or secrets are needed.
+
+For a manual deploy, `scripts/sync.sh` rsyncs sources from a dev machine
+to the Fedora box; then run the same `podman compose` rebuild there.
 
 ## Scope notes
 
