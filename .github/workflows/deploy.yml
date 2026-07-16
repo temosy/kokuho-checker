@@ -63,14 +63,30 @@ jobs:
 
       # Rebuild only the kokuho service in the rootful temosy-wordpress stack.
       # wp-nginx and the DB are untouched. sudo is passwordless for podman.
+      #
+      # IMPORTANT: `podman compose up -d --build` rebuilds the image but this host's
+      # podman-compose provider does NOT recreate a container that is already running
+      # (empirically confirmed 2026-07-16: a fresh image was built but the running
+      # container kept the OLD image; /kokuho/ still returned 200 so it looked green).
+      # `podman restart` is also broken here (conmon exits prematurely). So: build the
+      # image, force-remove the old container, then recreate it from the new image.
       - name: Rebuild kokuho container
         run: |
           cd "$HOME"/kakari-deploy/temosy-wordpress
-          sudo podman compose up -d --build kokuho
+          sudo podman compose build kokuho
+          sudo podman rm -f temosy-wordpress_kokuho_1 || true
+          sudo podman compose up -d kokuho
 
-      # Verify the live URL from inside the LAN, pinned to 127.0.0.1 to avoid
-      # hairpin NAT (SNI/cert still validated via --resolve).
+      # Verify: (1) the running container really is the freshly built image (guards
+      # against the silent no-recreate failure above), then (2) the live URL.
       - name: Verify live site
         run: |
+          latest=$(sudo podman image inspect -f '{{.Id}}' localhost/temosy-wordpress_kokuho:latest)
+          running=$(sudo podman inspect -f '{{.Image}}' temosy-wordpress_kokuho_1)
+          if [ "$latest" != "$running" ]; then
+            echo "::error::kokuho container is not running the freshly built image (running=$running latest=$latest)"
+            exit 1
+          fi
+          echo "  container image matches latest build ✓"
           curl -fsS -o /dev/null -w "  https://temosy.com/kokuho/ HTTP %{http_code}\n" \
             --resolve temosy.com:443:127.0.0.1 https://temosy.com/kokuho/
