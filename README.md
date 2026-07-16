@@ -8,6 +8,27 @@
 
 ## Architecture
 
+```mermaid
+flowchart LR
+    user["利用者<br/>世帯情報 + 通知額を入力"]
+
+    subgraph app["kokuho-checker（axum SSR / musl 単一バイナリ・入力は保存しない）"]
+        web["web<br/>src/bin/web.rs"]
+        subgraph engine["engine（src/ ・ 決定論的・LLM/通信なし）"]
+            direction LR
+            household["household.rs<br/>世帯モデル"]
+            calc["calc.rs<br/>期待保険料の算定<br/>7/5/2割軽減・上限・未就学児半額"]
+            verdict["verdict.rs<br/>妥当 / 要確認 / 明らかに異常"]
+        end
+    end
+
+    data[("data/<br/>自治体別 JSON 料率<br/>rates.rs で読込・手検証済")]
+    out["結果<br/>期待額の内訳 + 3段階判定 + 窓口確認メモ"]
+
+    user --> web --> household --> calc --> verdict --> out --> user
+    data --> calc
+```
+
 - **Engine** (`src/`): deterministic, data-driven premium calculation. No LLM,
   no network. Every yearly constant (rates, caps, reduction thresholds) comes
   from a `RateSchedule`, never from code.
@@ -65,13 +86,19 @@ proxies `/kokuho/` here; the fedora-edge SNI passthrough is untouched).
 Merging to `main` deploys automatically via
 [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml): a
 GitHub-hosted runner runs `cargo test` + `clippy`, then a self-hosted
-runner on the Fedora box syncs the sources into the build context and
-rebuilds only the `kokuho` service (`sudo podman compose up -d --build
-kokuho`), finally verifying `https://temosy.com/kokuho/`. The box is
-LAN-only, so the runner is pull-based; no SSH keys or secrets are needed.
+runner on the Fedora box syncs the sources into the build context,
+rebuilds the `kokuho` image and recreates the container
+(`podman compose build kokuho` then `up -d --force-recreate kokuho` —
+`--force-recreate` is required because this host's podman-compose won't
+replace a running container on `up -d`, and `podman rm -f` refuses since
+wp-nginx `depends_on` kokuho), then verifies **that the running container
+is the freshly built image** and that `https://temosy.com/kokuho/`
+responds. The box is LAN-only, so the runner is pull-based; no SSH keys or
+secrets are needed.
 
 For a manual deploy, `scripts/sync.sh` rsyncs sources from a dev machine
-to the Fedora box; then run the same `podman compose` rebuild there.
+to the Fedora box; then run the same `podman compose build` + `up -d
+--force-recreate kokuho` there.
 
 ## Scope notes
 
