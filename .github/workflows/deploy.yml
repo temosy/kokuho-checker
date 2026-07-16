@@ -61,21 +61,24 @@ jobs:
             --exclude '.git' --exclude 'target' \
             "$GITHUB_WORKSPACE"/ "$HOME"/kakari-deploy/kokuho-checker/
 
-      # Rebuild only the kokuho service in the rootful temosy-wordpress stack.
-      # wp-nginx and the DB are untouched. sudo is passwordless for podman.
+      # Rebuild the kokuho service in the rootful temosy-wordpress stack.
       #
-      # IMPORTANT: `podman compose up -d --build` rebuilds the image but this host's
-      # podman-compose provider does NOT recreate a container that is already running
-      # (empirically confirmed 2026-07-16: a fresh image was built but the running
-      # container kept the OLD image; /kokuho/ still returned 200 so it looked green).
-      # `podman restart` is also broken here (conmon exits prematurely). So: build the
-      # image, force-remove the old container, then recreate it from the new image.
+      # IMPORTANT (all empirically confirmed 2026-07-16 on this host):
+      # - `podman compose up -d [--build]` rebuilds the image but does NOT recreate a
+      #   container that is already running (it kept the OLD image; /kokuho/ still 200,
+      #   so the deploy looked green while shipping nothing).
+      # - `podman rm -f temosy-wordpress_kokuho_1` FAILS here because wp-nginx
+      #   depends_on kokuho, so podman refuses ("has dependent containers"). rm+up is
+      #   therefore not usable for kokuho.
+      # - `podman restart` is broken here (conmon exits prematurely).
+      # So: build the image, then `up -d --force-recreate` — it recreates kokuho from
+      # the fresh image and cascades to its dependent wp-nginx (a ~1s temosy.com blip;
+      # nginx re-resolves kokuho at runtime so it comes back clean).
       - name: Rebuild kokuho container
         run: |
           cd "$HOME"/kakari-deploy/temosy-wordpress
           sudo podman compose build kokuho
-          sudo podman rm -f temosy-wordpress_kokuho_1 || true
-          sudo podman compose up -d kokuho
+          sudo podman compose up -d --force-recreate kokuho
 
       # Verify: (1) the running container really is the freshly built image (guards
       # against the silent no-recreate failure above), then (2) the live URL.
