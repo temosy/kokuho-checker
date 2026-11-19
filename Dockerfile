@@ -9,7 +9,9 @@ COPY src ./src
 RUN cargo build --release --bin web
 
 FROM docker.io/library/alpine:3.22
-RUN adduser -D -H kokuho
+# The base image lags the Alpine repo (2026-11-19: zlib 1.3.2 left behind).
+# Upgrade first so system-kakari's container_refresh.py "stale packages" check clears after a rebuild.
+RUN apk upgrade --no-cache && adduser -D -H kokuho
 WORKDIR /app
 COPY --from=build /src/target/release/web /usr/local/bin/kokuho-web
 COPY data /app/data
